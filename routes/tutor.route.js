@@ -5,7 +5,6 @@ const router = require("express").Router();
 // registering to take a course
 router.post("/api/v1/takesubject/:id", authJwt.verifyToken, authJwt.isTutor, controller.regSub);
 
-
 // retrieving all registered course
 router.get("/api/v1/mysubjects/", authJwt.verifyToken, authJwt.isTutor, controller.sub_reg);
 

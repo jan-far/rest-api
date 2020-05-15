@@ -2,46 +2,71 @@
 
 ### Introduction
 This API is an endpoint of TUTORIAL BLOG where users (target here, being students) can actually book lessons and watch/read tutorial materials. As a user who is interesteed in taking a course. Tutoring are available as well. You may signup as a tutor for a paticular category, likewise register to take subjects under those categories. The available categories are PRIMARY, JSS, and SSS. Depending on the topic, level and your target audience as a tutor, you have room to select from the categories.
+#### NOTE: Post client is needed.
 
 ### SignUp and SignIn
-Use route `POST "/api/student/signup"` or `POST "/api/tutor/signup"` to register as a student or tutor respectively. see the Signup instruction below for more details on required fields.
+Use route `POST "../api/student/signup"` or `POST "../api/tutor/signup"` to register as a student or tutor respectively. see the Signup instruction below for more details on required fields.
 
 #### SignUp details:
 ##### signingUp as a student
-using the route and verb as stated above: `POST "/api/student/signup"`
+using the route and verb as stated above: `POST "../api/student/signup"`
 fill in this field of `KEY:VALUE` pairs.
 
 Using ; Body x-www-forwardurlencoded or raw json
-{
-    'firstname':'yourFirstName',
-    'lastname':'yourLastName',
-    'username':'choice',
-    'email':'yourEmail@mail.com',
-    'password':''yourPassword'
-}
+```
+        {
+            'firstname':'yourFirstName',
+            'lastname':'yourLastName',
+            'username':'choice',
+            'email':'yourEmail@mail.com',
+            'password':''yourPassword'
+        }
+```
 
 ##### signingUp as a tutor
-using the route and verb as stated above: `POST "/api/tutor/signup"`
+using the route and verb as stated above: `POST "../api/tutor/signup"`
 similarly, you fill in the fields.
 
 Using ; Body x-www-forwardurlencoded or raw json
-{
-    'firstname':'yourFirstName',
-    'lastname':'yourLastName',
-    'username':'choice',
-    'email':'yourEmail@mail.com',
-    'password':''yourPassword'
-}
+```
+        {
+            'firstname':'yourFirstName',
+            'lastname':'yourLastName',
+            'username':'choice',
+            'email':'yourEmail@mail.com',
+            'password':''yourPassword'
+        }
+```
 After you get a registration successful message. Proceed to login.
 
 #### SignIn details:
 #### SigningIn 
-To sign in, you need your 
+To sign in, you need your `username` and `password` .
+
+Using ; Body x-www-forwardurlencoded or raw json
+
+```
+        {
+            'username':'choice',
+            'password':''yourPassword'
+        }
+```
+On successful signIn, you recieve your information as well as an  access token.The token is to be used under `HEADER`. read more on authentication below. 
+
+### Authentication
+ After successful signup, then `POST "../api/signin"` to get your access token. Under the header section of your post client.
+ the `KEY:VALUE` pair to use,
+
+ KEY - "x-access-token"
+ VALUE - "yourToken"
+ ```
+ {
+     'x-access-token':'yourToken'
+ }
+```
+If Token is wrong, you then `Unauthenticated` as response when you try other routes. if `authenticated`, proceed.
 
 
-###Authentication
-You need to be a registered user to access this API. 
- After successful signup, then POST "/api/signin" to get your access token. look at AUTHENTICATION for more info.
 Error Codes
 
 `# GET /api/category`

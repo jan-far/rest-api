@@ -124,11 +124,12 @@ exports.delete_reg = (req, res) =>{
     const id = req.params.id;
 
     const sub = Subject.deleteOne({_id:id})
-
-    if(!sub){
+    .then(sub =>{
+       if(!sub){
       res.status(403).send({message:"Subject not registered"})
       return;
     };
+    })
 
     const reg = Reg.deleteMany({subject:id})
 
