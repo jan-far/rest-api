@@ -4,8 +4,26 @@ const Users = require("../models/user");
 const Lesson = require("../models/lesson");
 
 
-// router.get("/api/user/:id", [authJwt.verifyToken], controller.getUser);
+// fiding all users
+exports.getUsers = (req, res)=>{
+  // const id = req.params.id; 
+  const username = req.query.username;
+  var condition = username ? { username: { $regex: new RegExp(username) } } : {};
 
+  Users.find(condition)
+  .then(data =>{
+    if (!data || data =="")
+        res.status(404).send({ message: "No User found with id " + id });
+    res.send(data);
+  })
+  .catch(err => {
+    res.status(500).send({
+      message:err.message,
+       error:"Some error occurred while retrieving User. Invalid query"
+       
+    });
+  });
+};
 // regidter to take subject
 exports.createSub = (req, res) => {
   // Validate request
@@ -56,11 +74,8 @@ exports.createSub = (req, res) => {
 
             });
       })
-      
-});
-  }
-})
- 
+    });
+  }})
 };
 
 //find and update a subject
@@ -114,13 +129,13 @@ exports.deleteSub = (req, res) => {
 
 // find and update category
 exports.update_cat = (req, res) => {
-  if(!req.body) {
+  if(!req.body || req.body =="") {
     res.status(400).send({
       message: "Data to update can not be empty!"
     });
-    return
-  }
-
+    return 
+  } 
+    
   const id = req.params.id;
   Category.findByIdAndUpdate(id, req.body, { useFindAndModify: false })
     .then(data => {
@@ -159,7 +174,7 @@ exports.deleteCat = async(req, res) => {
 // Get all tutors
 exports.getTutors = async(req, res, next) => {
   try{
-    const tutors = await Users.find({role: "Tutor"},
+    const tutors = await Users.find({role:"Tutor"},
       {_id: 1, firstname:1, lastname:1, username:1, email:1},
       {sort: {firstname:1}}
     )
@@ -186,7 +201,7 @@ exports.get_a_Tutor = async(req, res, next) => {
       {sort: {firstname:1}}
     )
     if (!tutors) {
-      return res.status(404).json ("No tutor available at the moment")
+      return res.status(404).json ({message:"tutor not found at the moment"})
     }
     return res.status(200).send({
       message: "Tutor available",
@@ -228,67 +243,49 @@ exports.createLesson = (req, res) => {
     res.status(400).send({ message: "Content can not be empty!" });
     return;
   }
-  // Create a lesson
-  const lesson = new Lesson({
-    topic: req.body.topic,
-    subject: req.body.subject,
-   });
+  
+   var student = Users.findOne({username:req.query.username})
+   student.exec(function (err, student) {
+       if (err) {
+         res.status(500).send(err);
+         return;
+       }
+      
+       var tutor = Users.findOne({firstname:req.query.firstname, lastname:req.query.lastname})
 
-  // Save lesson in the database
-  lesson
-  .save((err, lesson) =>{ 
-    if (req.body.tutor) {
-      Users.find(
-        {firstname: req.query.firstname,
-          lastname: req.query.lastname,
-           role: "Tutor"},
-        (err, tutor) => {
-          if (err) {
-            res.status(500).send({ message: err });
-            return;
+        tutor.exec(function (err, tutor) {
+          if(err)
+          {
+            res.status(500).send({message: err})
           }
-
-          lesson.tutor= tutor.map(tutor => tutor._id);
-          lesson.save(err => {
-            if (err) {
-              res.status(500).send({ message: err });
-              return;
-                    } 
-            })
-        });
-      }
-      if (req.body.user) {
-        // const id = req.query.id;
-
-        Users.find({username: req.query.username},
-        (err, user) =>{
-          if (err) {
-            res.status(500).send({ message: err });
-            return;
-          }
-
-          lesson.user = user.map(user => user._id);
-          lesson.save(err => {
-            if (err) {
-              res.status(500).send({ message: err });
-              return;
-            }
-            res.status(200).send({
-              message: "lesson scheduled successfully",
-              id:lesson._id,
-            });
-          })
+          
+          const lesson = new Lesson({
+          topic: req.body.topic,
+          subject: req.body.subject,
+          student: student,
+          tutor: tutor
+          });
+       lesson.save((err, lesson)=>{
+        if (err){
+          res.status(500).send({message: err})
+        }
+        else if(lesson){
+          res.status(200).send({message:"Lesson created successfuly"})
+        }
       });
-      }
-  })
+      })
+      
+    }
+  )
 };
 
 //  retrieving all lessons
 exports.getLessons = async(req, res, next) => {
   try{
     const lesson = await Lesson.find()
-    .populate("tutor", "-_id -__v")
-    if (!lesson) {
+    .populate("tutor student", "-createdAt -updatedAt -id")
+    
+    if (!lesson || lesson =="") {
       return res.status(404).json ("No lesson available at the moment")
     }
     return res.status(200).send({
@@ -306,7 +303,7 @@ exports.findOneLesson = (req, res) => {
   const id = req.params.id;
 
   Lesson.findById(id)
-  populate("tutor", "-_id -__v")
+  .populate("tutor", "-_id -__v")
     .then(data => {
       if (!data)
         res.status(404).send({ message: "Not found lesson with id " + id });
@@ -323,8 +320,8 @@ exports.findOneLesson = (req, res) => {
 exports.Update_les = (req, res) => {
   const id = req.params.id;
 
-  Lesson.findOneAndUpdate(id)
-  populate("tutor", "-_id -__v")
+  Lesson.findOneAndUpdate(id, {useFindAndModify: false })
+  .populate("tutor", "-_id -__v")
     .then(data => {
       if (!data)
         res.status(404).send({ message: "Not found lesson with id " + id });
@@ -341,12 +338,14 @@ exports.Update_les = (req, res) => {
 exports.deleteLesson = (req, res) => {
   const id = req.params.id;
 
-  Lesson.findOneAndDelete(id)
-  populate("tutor", "-_id -__v")
+  // Lesson.deleteMany()
+  Lesson.findOneAndDelete(id, { useFindAndModify: false })
+  .populate("tutor", "-_id -__v")
     .then(data => {
       if (!data)
         res.status(404).send({ message: "Not found lesson with id " + id });
-      else res.send(data);
+      else 
+      res.send("lesson with id="+id+"deleted successfully!");
     })
     .catch(err => {
       res
@@ -357,16 +356,20 @@ exports.deleteLesson = (req, res) => {
 
 // makineg a tutor an admin
 exports.makeAdmin = (req, res) =>{
-  if (!req.body) {
+  if (!req.body.role) {
     return res.status(400).send({
       message: "Data to update can not be empty!"
     });
   }
 
-  const id = req.params
-  Users.findByIdAndUpdate (id, req.body, { useFindAndModify: false })
+  const id = req.params.id
+
+  Users.findByIdAndUpdate (id, req.body.role, { useFindAndModify: false })
   .then(data => {
-    if (!data) {
+    // Users.findById(id)
+    // .then (user => 
+    //   { Users.find({_id:req.userId, role:"Admin"})
+    if (!data || data =="") {
       res.status(404).send({
         message: `Cannot Upgrade tutor with id=${id}. Maybe Tutor was not found!`
       });

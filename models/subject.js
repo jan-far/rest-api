@@ -1,5 +1,6 @@
 const mogoose = require("mongoose");
 const Schema = mogoose.Schema;
+const Reg = require("../models/registration");
 
 const subjectSchema = new Schema({
     name: {type:String, required: true},
@@ -10,6 +11,15 @@ const subjectSchema = new Schema({
         ref: "Category",
         require: true
     },
+    tutor: {
+        type: mogoose.Schema.Types.ObjectId,
+        ref: "User",
+    }
 })
 
+
+subjectSchema.pre("remove", function (next) {
+    Reg.findByIdAndDelete(id)
+    next();
+}) 
 module.exports = mogoose.model("Subject", subjectSchema);

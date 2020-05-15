@@ -41,7 +41,6 @@ isAdmin = (req, res, next) => {
     });
 };
 
-
 isTutor = (req, res, next) => {
   User.findById(req.userId)
     .then (user => 
@@ -61,10 +60,30 @@ isTutor = (req, res, next) => {
     });
 };
 
+isStudent = (req, res, next) => {
+  User.findById(req.userId)
+    .then (user => 
+      { User.find({_id:req.userId, role:"Student"})
+    .then(data =>{
+        if (!data || data =="")
+        {
+          res.status(403).send({ message: "Must be of 'Student' Role!" })
+          return;
+        }
+        if (data){
+        res.status(200)
+        next();
+        return
+      }
+      },)
+    });
+};
+
 
 const authJwt = {
   verifyToken,
   isAdmin,
   isTutor,
+  isStudent
 };
 module.exports = authJwt;

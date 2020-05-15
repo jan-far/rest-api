@@ -4,24 +4,6 @@ const Subject = require("../models/subject");
 const Users = require("../models/user")
 // const db = require("../config");
 
-//fiding all users
-// exports.getUser = (req, res)=>{
-//   const id = req.params.id; 
-
-//   Users.findById(id)
-//   .then(data =>{
-//     if (!data || data =="")
-//         res.status(404).send({ message: "No User found with id " + id });
-//     res.send(data);
-//   })
-//   .catch(err => {
-//     res.status(500).send({
-//       message:
-//       err.message || "Some error occurred while retrieving User."
-//     });
-//   });
-// };
-
 // Get loggedin user
 exports.getUser = async (req,res) =>{
   try {

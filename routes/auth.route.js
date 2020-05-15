@@ -4,16 +4,16 @@ const { studentSignup, tutorSignup, ADMIN } = require("../controllers/auth.contr
 const { signin} = require("../controllers/auth.controller");
 
 
-router.post("/admin", verifySignUp.checkDuplicateUsernameOrEmail, ADMIN);
+// router.post("/v1/admin", verifySignUp.checkDuplicateUsernameOrEmail, ADMIN);
 
-router.post('/api/student/signup',
+router.post('/api/v1/student/signup',
     verifySignUp.checkDuplicateUsernameOrEmail,
     studentSignup);
 
-router.post("/api/tutor/signup",
+router.post("/api/v1/tutor/signup",
     verifySignUp.checkDuplicateUsernameOrEmail,tutorSignup);
 
-router.post('/api/signin', signin);
+router.post('/api/v1/signin', signin);
 
 module.exports = router;
 

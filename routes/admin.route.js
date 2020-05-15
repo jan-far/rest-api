@@ -4,9 +4,9 @@ const router = require("express").Router();
 
 
 // Getting all users
-// router.get(
-//     "/api/users/",[authJwt.verifyToken, authJwt.isAdmin],
-//     controller.findUsers)
+router.get(
+    "/api/v1/users/",[authJwt.verifyToken, authJwt.isAdmin],
+    controller.getUsers)
 
 // Creating a subject
 router.post("/api/v1/subject/register",[authJwt.verifyToken, authJwt.isAdmin], controller.createSub);
@@ -24,7 +24,7 @@ router.put("/api/v1/category/:id", [authJwt.verifyToken, authJwt.isAdmin], contr
 router.delete("/api/v1/category/:id", [authJwt.verifyToken, authJwt.isAdmin], controller.deleteCat);
 
 // retrieving all tutors
-router.get("/api/v1/tutors", [authJwt.verifyToken, authJwt.isAdmin], controller.getTutors);
+router.get("/api/v1/tutor", [authJwt.verifyToken, authJwt.isAdmin], controller.getTutors);
 
 // retreving a tutor
 router.get("/api/v1/tutor/:id", [authJwt.verifyToken, authJwt.isAdmin], controller.get_a_Tutor);
@@ -33,7 +33,7 @@ router.get("/api/v1/tutor/:id", [authJwt.verifyToken, authJwt.isAdmin], controll
 router.delete("/api/v1/tutor/:id", [authJwt.verifyToken, authJwt.isAdmin], controller.deleteTutor);
 
 // Booking lessons
-router.post("/api/v1/lesson/register", [authJwt.verifyToken, authJwt.isAdmin], controller.createLesson);
+router.post("/api/v1/lesson/register/", [authJwt.verifyToken, authJwt.isAdmin], controller.createLesson);
 
 // retrieving all lesson
 router.get("/api/v1/lesson", [authJwt.verifyToken, authJwt.isAdmin], controller.getLessons);
@@ -48,7 +48,7 @@ router.put("/api/v1/lesson/:id", [authJwt.verifyToken, authJwt.isAdmin], control
 router.delete("/api/v1/lesson/:id", [authJwt.verifyToken, authJwt.isAdmin], controller.deleteLesson);
 
 // making a tutor an admin
-router.put("/api/v1/tutor/role", [authJwt.verifyToken, authJwt.isAdmin], controller.makeAdmin);
+router.put("/api/v1/tutor/role/:id", [authJwt.verifyToken, authJwt.isAdmin], controller.makeAdmin);
 
 
 

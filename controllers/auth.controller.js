@@ -7,25 +7,26 @@ var bcrypt = require("bcryptjs");
 
 
 
-exports.ADMIN = (req,res) => {
-  const user = new User({
-    firstname: req.body.firstname,
-    lastname: req.body.lastname,
-    username: req.body.username,
-    email: req.body.email,
-    role: "Admin",
-    password: bcrypt.hashSync(req.body.password, 12)
-  });
+// exports.ADMIN = (req,res) => {
+//   const user = new User({
+//     firstname: req.body.firstname,
+//     lastname: req.body.lastname,
+//     username: req.body.username,
+//     email: req.body.email,
+//     role: "Admin",
+//     password: bcrypt.hashSync(req.body.password, 12)
+//   });
 
-  user.save((err, user) => {
-    if (err) {
-      res.status(500).send({ message: err });
-      return;
-    }
+//   user.save((err, user) => {
+//     if (err) {
+//       res.status(500).send({ message: err });
+//       return;
+//     }
 
-    res.send({ message: "Admin created successfully!" });
-        });
-  };
+//     res.send({ message: "Admin created successfully!" });
+//         });
+//   };
+
 
 exports.studentSignup = (req, res) => {
   if(!req.body.email|| !req.body.password || !req.body.firstname ||!req.body.lastname) {
