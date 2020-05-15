@@ -4,6 +4,8 @@
 This API is an endpoint of TUTORIAL BLOG where users (target here, being students) can actually book lessons and watch/read tutorial materials. As a user who is interesteed in taking a course. Tutoring are available as well. You may signup as a tutor for a paticular category, likewise register to take subjects under those categories. The available categories are PRIMARY, JSS, and SSS. Depending on the topic, level and your target audience as a tutor, you have room to select from the categories.
 #### NOTE: Post client is needed.
 
+### Available online. [Click here!](https://tut-blog-api.herokuapp.com/)
+
 ### SignUp and SignIn
 There are 3 roles in this API endpoint. An `Admin`, a `Student` and a `Tutor`. Users can register as either a student or a tutor.
 
@@ -104,7 +106,7 @@ The following are required fields to create subjects
     'name':'theSubjectName',
     'topic':'theTopic',
     'description':'short note on the topic',
-    'category':'either _primary_, _jss_ and _sss_ ',
+    'category':'either _**primary**_ , _**jss**_ and _**sss**_ ',
 }
 
 ```
