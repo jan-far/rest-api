@@ -2,9 +2,8 @@
 
 ### Introduction
 This API is an endpoint of TUTORIAL BLOG where users (target here, being students) can actually book lessons and watch/read tutorial materials. As a user who is interesteed in taking a course. Tutoring are available as well. You may signup as a tutor for a paticular category, likewise register to take subjects under those categories. The available categories are PRIMARY, JSS, and SSS. Depending on the topic, level and your target audience as a tutor, you have room to select from the categories.
-#### NOTE: Post client is needed.
+#### NOTE: Post client is needed. Available online. [Click here!](https://tut-blog-api.herokuapp.com/)
 
-### Available online. [Click here!](https://tut-blog-api.herokuapp.com/)
 
 ### SignUp and SignIn
 There are 3 roles in this API endpoint. An `Admin`, a `Student` and a `Tutor`. Users can register as either a student or a tutor.
@@ -26,6 +25,7 @@ Using ; Body x-www-forwardurlencoded or raw json
             'password':''yourPassword'
         }
 ```
+</br>
 
 ##### signingUp as a tutor
 using the route and verb as stated above: `POST "../api/tutor/signup"`
@@ -44,7 +44,7 @@ Using ; Body x-www-forwardurlencoded or raw json
 After you get a registration successful message. Proceed to login.
 
 #### SignIn details:
-#### SigningIn 
+##### SigningIn 
 To sign in, you need your `username` and `password` .
 
 Using ; Body x-www-forwardurlencoded or raw json
@@ -106,7 +106,7 @@ The following are required fields to create subjects
     'name':'theSubjectName',
     'topic':'theTopic',
     'description':'short note on the topic',
-    'category':'either _**primary**_ , _**jss**_ and _**sss**_ ',
+    'category':'either "primary", "jss" and "sss" ',
 }
 
 ```
@@ -123,19 +123,21 @@ To update : `PUT ../api/v1/category/:id`</br>
 To delete : `DELETE ../api/v1/category/:id` </br>
 where `:id` is the category's id
 
--> can retrieve all tutors
+-> can retrieve all tutors </br>
 `GET ../api/v1/istutor`
 
--> can get a tutor (by Id)
+-> can get a tutor (by Id) </br>
 `GET ../api/v1/tutor/:id`   where `:id` is the tutor's id
 
--> can deactivate a tutor (by Id)
+-> can deactivate a tutor (by Id) </br>
 `DELETE ../api/v1/tutor/:id`    where `:id` is the tutor's id
 
--> can book lessons
+-> can book lessons</br>
 `POST /api/v1/lesson/register/?firstname="FN"&lastname="LN"&username="UN"` </br>
+
 Register Lesson between TUTOR and STUDENT. where FN and LN are the firstname and lastname of the tutor respectively. the UN is the username of the student.
-### NOTE: put the firstname, lastname and username without qoutes (if using the URL)
+
+##### NOTE: put the firstname, lastname and username without qoutes (if using the URL)
 
 -> can retrieve all lessons
 `GET ../api/v1/lesson`
