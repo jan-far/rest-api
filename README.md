@@ -5,6 +5,8 @@ This API is an endpoint of TUTORIAL BLOG where users (target here, being student
 #### NOTE: Post client is needed.
 
 ### SignUp and SignIn
+There are 3 roles in this API endpoint. An `Admin`, a `Student` and a `Tutor`. Users can register as either a student or a tutor.
+
 Use route `POST "../api/student/signup"` or `POST "../api/tutor/signup"` to register as a student or tutor respectively. see the Signup instruction below for more details on required fields.
 
 #### SignUp details:
@@ -57,53 +59,112 @@ On successful signIn, you recieve your information as well as an  access token.T
  After successful signup, then `POST "../api/signin"` to get your access token. Under the header section of your post client.
  the `KEY:VALUE` pair to use,
 
- KEY - "x-access-token"
+ KEY - "x-access-token",
  VALUE - "yourToken"
  ```
  {
      'x-access-token':'yourToken'
  }
 ```
-If Token is wrong, you then `Unauthenticated` as response when you try other routes. if `authenticated`, proceed.
+
+If Token is wrong, you then `Unauthenticated` as response when you try other routes. if `authenticated`, proceed. Likewise, all route are demand authorization, if Token is not provided, you will be need to do so to access routes.
 
 
-Error Codes
+## General Access: (For Admin, Tutors and Students);
 
-`# GET /api/category`
-All users can retrieve all categories. Users can view the available categories and make search based on their preferred category.
+All users can access the following routes to perform specific task.
 
-`GET /api/v1/subject/category/:id`
-finding all subject by category. After getting the list of categories and their respective id's, you may get subjects of a specific category. Just by accessing the followng route where :id is of the category. /api/subject/category/:id.
+Already logged in? and need to get your id or other details? 
+`POST ../api/v1/me`- To access/retrieve your info in a JIFFY
 
-`POST /api/v1/me`- Already logged in? and need to get your id or other details? Using the /api/me will fetch out your details.
+`GET ../api/v1/subject/:id` - Retrieving a subject in a category (by Id)
+where `:id` is the subject id
 
-`DELETE /api/v1/subject/:id` - To delete a subject. use the `GET /api/subject` to retrive all subject with their id, then supply it to the route above using the verb `"DELETE"`
+`GET ../api/v1/subject/category/:id` - view all available subjects by category. After getting the list of categories and their respective id's, you may get subjects of a specific category. 
+where `:id` is the id of the category you want to call
 
-`GET /api/subject/` - Retrieving all registered subjects.
+`GET ../api/v1/category/` - To retrieve all categories
 
-`POST api/v1/subject/register` - Registering a subject under a category. use the `GET /api/category` to obtain the name of available categories
+`GET ../api/v1/subject/` - Retrieve all subject. Also can search for subjects by name, sorted alphabetically in ascending order.
+You need to know the subject name then pass it into the URL.
+E.g `GET ../api/v1/subject?name=mathematics.`
 
-`GET /api/category` - Retrieve all categories info.
-
-`DELETE /api/category/:id` - Removig a category by Id. `GET` all categories to obtain id's
-
-`GET /api/tutor` - Retrieve available tutors.
-
-`GET /api/tutor/:id` - Retrieving information of a tutor
+`GET ../api/v1/tutors` - retrieve all registered/available tutors. can search for tutors by first name, sorted alphabetically in ascending order.
 
 
-`GET /api/v1/lesson/` - Retrieve all lessons
+## Admin Access Only;
+
+Admin can do lots more task. A tutor can be promoted to admin role, if criterials are met. Admin can do the following:
+
+-> can create subjects under 3 categories: primary, JSS, SSS
+`POST ../api/v1/subject/register`
+The following are required fields to create subjects
+```
+{
+    'name':'theSubjectName',
+    'topic':'theTopic',
+    'description':'short note on the topic',
+    'category':'either _primary_, _jss_ and _sss_ ',
+}
+
+```
+
+-> can update a subject in a category (by Id)
+`PUT ../api/v1/subject/:id`     where `:id` is the subject's id
+
+->can delete a subject in a category (by Id)
+`DELETE ../api/v1/subject/:id`  where `:id` is the subject's id
+
+->can delete or update a category
+
+To update : `PUT ../api/v1/category/:id`</br>
+To delete : `DELETE ../api/v1/category/:id` </br>
+where `:id` is the category's id
+
+-> can retrieve all tutors
+`GET ../api/v1/istutor`
+
+-> can get a tutor (by Id)
+`GET ../api/v1/tutor/:id`   where `:id` is the tutor's id
+
+-> can deactivate a tutor (by Id)
+`DELETE ../api/v1/tutor/:id`    where `:id` is the tutor's id
+
+-> can book lessons
+`POST /api/v1/lesson/register/?firstname="FN"&lastname="LN"&username="UN"` </br>
+Register Lesson between TUTOR and STUDENT. where FN and LN are the firstname and lastname of the tutor respectively. the UN is the username of the student.
+### NOTE: put the firstname, lastname and username without qoutes (if using the URL)
+
+-> can retrieve all lessons
+`GET ../api/v1/lesson`
+
+-> can get a lesson (by Id)
+`GET ../api/v1/lesson/:id`  where `:id` is the lesson's id
+
+-> can update a lesson (by Id)
+`PUT ..api/v1/lesson/:id`   where `:id` is the lesson's id
+
+-> can delete a lesson (by Id)
+`DELETE ..api/v1/lesson/:id`    where `:id` is the lesson's id
+
+-> Make a tutor an admin
+`PUT ../api/v1/tutor/role/:id`  where `:id` is the tutor's id
 
 
-`POST /api/v1/lesson/register/?firstname="FN"&lastname="LN"&username="UN"`- Register Lesson between #####TUTOR and ######STUDENT. where #####FN and #####LN are the firstname and lastname of the tutor respectively. the UN is the username of the student NOTE: put the firstname, lastname and username without qoutes (if using the URL)
+## Tutor Access Only;
+A tutor has=ve access exclusive to their role. These includes;
 
-`DELETE /api/tutor/:id` - deactivating a tutor by id
+-> register to take a subject in a category
+`POST ../api/v1/takesubject/:id`    where `:id` is the subject's id
 
-`PUT /api/v1/mysubjects/:id` - Retrieve the subjects you have registered to take, as a tutor.
+-> Retrieve the subjects you have registered to take, as a tutor.
+`GET ../api/v1/mysubjects/`
 
-`POST /api/v1/takesubject/:id` - As a tutor, you can register to take a course. POST "/api/v1/takesubject/:id" where ":id" is the ID of the subject you want to take.
+-> update a registered subject
+`PUT ../api/v1/mysubject/:id`   where `:id` is the registered subject's id
 
-`GET /api/v1/mysubjects/` - Get the whole list of subjects you have registered to as a tutor.
+-> delete a registered subject </br>
 
+ Interestingly! once a tutor feels done with subject or no longer interested in taking a subject, He/She can delete registration to the subject. The subject will be there if tutor's change their mind to register back.
 
-`DELETE /api/v1/mysubject/:id` - Interestingly! once you feel you are done or no longer interested in taking a subject, you can delete your registration. If you change your mind, the subject will still be there for you to register back. DELETE "/api/v1/mysubject/:id" where :id is the subject you registered to.
+`DELETE ../api/v1/mysubject/:id`    where `:id` is the registered subject's id

@@ -24,7 +24,7 @@ router.put("/api/v1/category/:id", [authJwt.verifyToken, authJwt.isAdmin], contr
 router.delete("/api/v1/category/:id", [authJwt.verifyToken, authJwt.isAdmin], controller.deleteCat);
 
 // retrieving all tutors
-router.get("/api/v1/tutor", [authJwt.verifyToken, authJwt.isAdmin], controller.getTutors);
+router.get("/api/v1/istutor", [authJwt.verifyToken, authJwt.isAdmin], controller.getTutors);
 
 // retreving a tutor
 router.get("/api/v1/tutor/:id", [authJwt.verifyToken, authJwt.isAdmin], controller.get_a_Tutor);

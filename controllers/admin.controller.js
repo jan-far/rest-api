@@ -24,6 +24,7 @@ exports.getUsers = (req, res)=>{
     });
   });
 };
+
 // regidter to take subject
 exports.createSub = (req, res) => {
   // Validate request
